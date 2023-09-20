@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require('body-parser');
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 const port = 3000
@@ -14,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 
 app.get("/", (req, res) => {
-  res.send("Helloo World");
+  res.sendFile(path.join(__dirname + "../client/pages/home.html"));
 })
 .post('/', (req, res) => {
   let user = req.body
