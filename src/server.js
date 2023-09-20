@@ -13,10 +13,21 @@ app.use(cors());
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
+app.use(express.static(path.join(__dirname, "../client")))
+
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "../client/pages/home.html"));
 })
+
+app.get("/home.js", (req, res) => {
+  res.sendFile(path.join(__dirname + "../client/scripts/home.js"));
+})
+
+app.get("/global.css", (req, res) => {
+  res.sendFile(path.join(__dirname + "../client/styles/global.css"));
+})
+
 .post('/', (req, res) => {
   let user = req.body
   user.id = id
