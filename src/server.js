@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, "../client")))
 
 
-app.get("/", (req, res) => {
+app.get("/home.html", (req, res) => {
   res.sendFile(path.join(__dirname + "../client/pages/home.html"));
 })
 
