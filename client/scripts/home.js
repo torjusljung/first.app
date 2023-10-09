@@ -40,3 +40,25 @@ console.log(user);
     })
   
 }
+async function getWeather() {
+    
+  const promise = new Promise((resolve, reject) =>{
+    setInterval(async () => {
+      try {
+        const result = await axios.get(
+          "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m"
+        );
+        resolve(result);
+        console.log(result);
+      } catch(err) {
+        reject(err);
+      } finally {
+      }
+    }, 2000);
+  })
+  console.log(promise);
+  return promise
+}
+getWeather()
+
+
