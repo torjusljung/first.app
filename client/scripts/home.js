@@ -61,56 +61,23 @@ async function getWeather() {
 }
 getWeather()
 
-async function pingForAverageRTT (serverAdress, amount = 10, delay = 500) {
-  // Sender en besked til serveren
-  const message = 'ping'
-  const receivedTimeStamps = [];
-  const sendTimeStamps = [];
-  
-  client.on('message', function (incommingMessage, remote) {
-      const receivedTime = Date.now();
-      receivedTimeStamps.push(receivedTime);
+const net = require('net');
 
-      // Samler alle svar tider
-      const roundTripTimes = []
-      receivedTimeStamps.forEach((receivedTime, index) => {
-          roundTripTimes.push(receivedTime - sendTimeStamps[index])
-      })
+const client = new net.Socket();
 
-      // Udregn gennemsnitlig svartid
-      let roundTripTimeSum = 0
-      roundTripTimes.forEach((roundTripTime) => {
-          roundTripTimeSum += roundTripTime;
-      })
-      const averageRoundTripTime = roundTripTimeSum / roundTripTimes.length;
-      console.log('Received message. Average RTT:', averageRoundTripTime, 'ms');    
-  });
+const SERVER_PORT = 3000;
+const SERVER_IP = '138.68.102.240'; // Replace with the IP address of your server
 
-  for (let i = 0; i < amount; i++) {
-      await asyncTimeout(delay)
-      await sendMessage(message, PORT, serverAdress).then(() => { 
-          timestamp = Date.now();
-          sendTimeStamps.push(timestamp);
-          console.log('sent', message, 'at time', timestamp);
-      })
-  }
-}// Send en request og udregn svartiden
-function pingForRTT (serverAdress) {
-  // Sender en besked til serveren
-  const message = 'ping'
-  sendMessage(message, PORT, serverAdress).then(() => { 
-      timestamp = Date.now();
-      console.log('sent', message, 'at time', timestamp);
-  })
-  
-  
-  // Udregner svartiden fra serveren ved brug af Date.now()
-  // Lytter til svar fra serveren
-  client.on('message', function (incommingMessage, remote) {
-      console.log('Received', incommingMessage.toString());
-      const receivedTime = Date.now();
-      const roundTripTime = receivedTime - timestamp;
-      console.log('Round trip time:', roundTripTime, 'ms');
+function ping() {
+  const startTime = process.hrtime();
+
+  client.write('ping');
+
+  client.once('data', (data) => {
+    const endTime = process.hrtime(startTime);
+    const roundTripTime = (endTime[0] * 1e9 + endTime[1]) / 1e6; // Convert to milliseconds
+    console.log(`Round trip time: ${roundTripTime}ms`);
+    setTimeout(ping, 1000); // Ping every second
   });
 }
 
