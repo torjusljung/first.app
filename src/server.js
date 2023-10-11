@@ -52,3 +52,19 @@ app.listen(port, () => {
   console.log(`Server open on port ${port}`);
 });
  
+// server.js
+const net = require('net');
+
+const server = net.createServer((socket) => {
+  socket.on('data', (data) => {
+    const message = data.toString().trim();
+    if (message === 'ping') {
+      socket.write('pong\n');
+    }
+  });
+});
+
+const PORT = 3000;
+server.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+});
